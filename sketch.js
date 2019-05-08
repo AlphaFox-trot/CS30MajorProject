@@ -31,9 +31,6 @@ class Enemy{
   }
   move() {
     this.x -= this.speed;
-    if(this.y[round(this.X/100) - 4] !== 0){
-      this.y[round(this.X/100) - 4] = 0;
-    }
   }
 
   attack(){
@@ -108,6 +105,7 @@ let defenceLane4 = [];
 let defenceLane5 = [];
 let selectedTower = 1;
 let price, scrap;
+let pusher;
 // list of enemies on the grid
 let enemyGrid = [];
 let enemyList1 = [];
@@ -295,15 +293,16 @@ function enemyController(){
     }
     anotherBuffer--;
     if (anotherBuffer <= 0){
+      pusher = floor(random(0, 5));
       selected = enemyWave.shift();
       if (selected === 1){
-        enemyGrid[random(0, 6)].push(new Enemy(1500, floor(random(0, 5)), "red", 1, 3));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 1, 3));
       }
       if (selected === 2){
-        enemyGrid[random(0, 6)].push(new Enemy(1500, floor(random(0, 5)), "blue", 1.5, 2));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1.5, 2));
       }
       if (selected === 3){
-        enemyGrid[random(0, 6)].push(new Enemy(1500, floor(random(0, 5)), "grey", 0.5, 5));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.5, 5));
       }
       anotherBuffer = random(100, 300);
     }
@@ -312,7 +311,6 @@ function enemyController(){
 
 function mousePressed(){
   if (mouseX > 350 && mouseX < 1350 && mouseY > 250 && mouseY < 750 &&  menu === "game" && scrap >= price && (defenceGrid[cursorY-3][cursorX-4] === 0 || selectedTower === 0)){
-    defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, defenceGrid[cursorY-4]);
     defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-4]);
     if (selectedTower !== 5){
       scrap = scrap - price;
