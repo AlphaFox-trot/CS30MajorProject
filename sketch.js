@@ -85,7 +85,9 @@ class Structure {
       }
       if(this.type === 2){
         this.buffer = 250;
-        this.list[0].damage(2);
+        if(this.list !== 0){
+          this.list[0].damage(2);
+        }
       }
     }
   }
@@ -296,13 +298,13 @@ function enemyController(){
       pusher = floor(random(0, 5));
       selected = enemyWave.shift();
       if (selected === 1){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 1, 3));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5));
       }
       if (selected === 2){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1.5, 2));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3));
       }
       if (selected === 3){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.5, 5));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10));
       }
       anotherBuffer = random(100, 300);
     }
