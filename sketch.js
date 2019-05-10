@@ -86,12 +86,33 @@ class Structure {
       if(this.type === 2){
         this.buffer = 250;
         if(this.list !== 0){
-          this.list[0].damage(2);
+          bulletList.push(new Bullet(this.list, this.x));
         }
       }
     }
   }
 }
+
+class Bullet{
+  constructor(aList, aX){
+    this.list = aList;
+    this.X = aX;
+    this.speed = 5;
+  }
+  move(){
+    this.X += this.speed;
+    for(let i = 0; i < this.list.length; i++){
+      if(this.X > this.list[i].X){
+        this.list[i].damage(2);
+      }
+    }
+  }
+  display(){
+    fill(150);
+    ellipse(this.X, this.list*100, 25, 25);
+  }
+}
+
 // makes the grid
 let grid = [];
 let lane1 = [];
@@ -116,6 +137,7 @@ let enemyList3 = [];
 let enemyList4 = [];
 let enemyList5 = [];
 let enemyWave = [];
+let bulletList = [];
 let timer = 0;
 let buffer = 200;
 let waveBuffer = 200;
@@ -227,6 +249,12 @@ function displayMenu(){
     for(let i = 0; i < enemyList1.length; i++){
       enemyList1[i].move();
       enemyList1[i].display();
+    }
+    if(bulletList.length !== 0){
+      for(let i = 0; i < bulletList.length; i++){
+        bulletList[i].move();
+        bulletList[i].display();
+      }
     }
     // displayes Grid
     for (let i = 0; i < grid.length; i++){
