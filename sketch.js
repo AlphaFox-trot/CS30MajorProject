@@ -48,7 +48,7 @@ class Enemy{
 class Structure {
   constructor(aType, x, y, aList){
     this.type = aType;
-    this.x = x;
+    this.x = x*100;
     this.row = y;
     this.buffer = 500;
     this.buffer = 250;
@@ -86,7 +86,7 @@ class Structure {
       if(this.type === 2){
         this.buffer = 250;
         if(this.list !== 0){
-          bulletList.push(new Bullet(this.list, this.x));
+          bulletList.push(new Bullet(this.list, this.x, this.row));
         }
       }
     }
@@ -94,9 +94,10 @@ class Structure {
 }
 
 class Bullet{
-  constructor(aList, aX){
+  constructor(aList, aX, aY){
     this.list = aList;
     this.X = aX;
+    this.Y = aY;
     this.speed = 5;
   }
   move(){
@@ -109,7 +110,7 @@ class Bullet{
   }
   display(){
     fill(150);
-    ellipse(this.X, this.list*100, 25, 25);
+    ellipse(this.X, this.Y*100, 25, 25);
   }
 }
 
@@ -165,7 +166,15 @@ function setup() {
   buttonY1 = windowHeight/2;
   buttonY2 = windowHeight/2; 
   for(let i = random(19, 30); i > 0; i--){
-    enemyWave.push(floor(random(1, 4)));
+    if(enemyWave.length > 8){
+      enemyWave.push(floor(random(1, 4)));
+    }
+    else if(enemyWave.length > 4){
+      enemyWave.push(floor(random(1, 3)));
+    }
+    else{
+      enemyWave.push(1);
+    }
   }
 }
 function draw() {
@@ -194,7 +203,7 @@ function checkMenu(){
   if (mouseIsPressed && menu === "start" && mouseX >= buttonX1 - 125 && mouseX <= buttonX1 + 125 && mouseY >= buttonY1 - 50 && mouseY <= buttonY1 + 50){
     menu = "game";
     type = "campain";
-    scrap = 30;
+    scrap = 200;
   }
   else if (mouseIsPressed && menu === "start" && mouseX >= buttonX2 - 125 && mouseX <= buttonX2 + 125 && mouseY >= buttonY2 - 50 && mouseY <= buttonY2 + 50){
     menu = "game";
@@ -250,12 +259,6 @@ function displayMenu(){
       enemyList1[i].move();
       enemyList1[i].display();
     }
-    if(bulletList.length !== 0){
-      for(let i = 0; i < bulletList.length; i++){
-        bulletList[i].move();
-        bulletList[i].display();
-      }
-    }
     // displayes Grid
     for (let i = 0; i < grid.length; i++){
       for (let j = 0; j < lane1.length; j++){
@@ -268,6 +271,12 @@ function displayMenu(){
         rect(j*100 + 400, i*100 + 300, 100, 100);
       }
     }
+    if(bulletList.length !== 0){
+      for(let i = 0; i < bulletList.length; i++){
+        bulletList[i].move();
+        bulletList[i].display();
+      }
+    }
     fill(255, 255, 0);
     if (mouseX > 350 && mouseX < 1350 && mouseY > 250 && mouseY < 750){
       rect(cursorX*100-45, cursorY*100-45, 10, 10);
@@ -275,7 +284,6 @@ function displayMenu(){
       rect(cursorX*100+45, cursorY*100+45, 10, 10);
       rect(cursorX*100-45, cursorY*100+45, 10, 10);
     } 
-    enemyController();
     for (let j = 0; j < defenceGrid.length; j++){
       for (let i = 0; i < defenceLane1.length; i++){
         if (defenceGrid[j][i] !== 0){
@@ -284,6 +292,7 @@ function displayMenu(){
         }
       }
     }
+    enemyController();
   }
 }
 function refresh(){
@@ -341,7 +350,7 @@ function enemyController(){
 
 function mousePressed(){
   if (mouseX > 350 && mouseX < 1350 && mouseY > 250 && mouseY < 750 &&  menu === "game" && scrap >= price && (defenceGrid[cursorY-3][cursorX-4] === 0 || selectedTower === 0)){
-    defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-4]);
+    defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-3]);
     if (selectedTower !== 5){
       scrap = scrap - price;
     }
