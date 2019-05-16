@@ -85,7 +85,7 @@ class Structure {
       }
       if(this.type === 2){
         this.buffer = 250;
-        if(this.list !== 0){
+        if(this.list.length !== 0){
           bulletList.push(new Bullet(this.list, this.x, this.row));
         }
       }
@@ -255,10 +255,7 @@ function displayMenu(){
       fill(150, 150, 0);
       rect(200, 250, 80, 80);
     }
-    for(let i = 0; i < enemyList1.length; i++){
-      enemyList1[i].move();
-      enemyList1[i].display();
-    }
+
     // displayes Grid
     for (let i = 0; i < grid.length; i++){
       for (let j = 0; j < lane1.length; j++){
@@ -295,16 +292,7 @@ function displayMenu(){
     enemyController();
   }
 }
-function refresh(){
-  for (let i = 0; i < defenceGrid.length; i++){
-    for (let j = 0; j < defenceLane1.length; j++){
-      if(defenceGrid[i][j] === 1){
-        scrap += 5;
-      }
-    }
-  }
-  scrap += 10;
-}
+
 function enemyController(){
   if (waveBuffer >= 0){
     waveBuffer--;
