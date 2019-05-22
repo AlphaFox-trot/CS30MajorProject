@@ -6,21 +6,21 @@ class Enemy{
   constructor(x, aList, aColour, aSpeed, aHealth) {
     this.x = x;
     this.y = aList;
-    if(this.y === 0){
-      this.row = enemyList1;
-    }
-    else if(this.y === 1){
-      this.row = enemyList2;
-    }
-    else if(this.y === 2){
-      this.row = enemyList3;
-    }
-    else if(this.y === 3){
-      this.row = enemyList4;
-    }
-    else if(this.y === 4){
-      this.row = enemyList5;
-    }
+    // if(this.y === 0){
+    //   this.row = enemyList1;
+    // }
+    // else if(this.y === 1){
+    //   this.row = enemyList2;
+    // }
+    // else if(this.y === 2){
+    //   this.row = enemyList3;
+    // }
+    // else if(this.y === 3){
+    //   this.row = enemyList4;
+    // }
+    // else if(this.y === 4){
+    //   this.row = enemyList5;
+    // }
     this.color = aColour;
     this.speed = aSpeed; 
     this.health = aHealth;
@@ -36,13 +36,6 @@ class Enemy{
   attack(){
 
   }
-
-  damage(number) {
-    this.health -= number;
-    if(this.health <= 0){
-      this.list.shift[0];
-    }
-  }
 }
 
 class Structure {
@@ -57,7 +50,7 @@ class Structure {
 
   show(){
     if (this.type === 1){
-      fill(50);
+      fill(50, 50, 50);
       rect(this.x*100, this.row*100, 50, 50);
     }
     if (this.type === 2){
@@ -298,25 +291,16 @@ function enemyController(){
     waveBuffer--;
   }
   else{
-    for(let i = 0; i < enemyList1.length; i++){
-      enemyList1[i].move();
-      enemyList1[i].display();
-    }
-    for(let i = 0; i < enemyList2.length; i++){
-      enemyList2[i].move();
-      enemyList2[i].display();
-    }
-    for(let i = 0; i < enemyList3.length; i++){
-      enemyList3[i].move();
-      enemyList3[i].display();
-    }
-    for(let i = 0; i < enemyList4.length; i++){
-      enemyList4[i].move();
-      enemyList4[i].display();
-    }
-    for(let i = 0; i < enemyList5.length; i++){
-      enemyList5[i].move();
-      enemyList5[i].display();
+    for(let j = 0; j < enemyGrid.length; j++){
+      for(let i = 0; i < enemyList1.length; i++){
+        // if (enemyGrid[j][i].health <= 0){
+        //   enemyGrid[j].splice(i, 1);
+        // }
+        // else{
+          enemyGrid[j][i].move();
+          enemyGrid[j][i].display();
+       // }
+      }
     }
     anotherBuffer--;
     if (anotherBuffer <= 0){
