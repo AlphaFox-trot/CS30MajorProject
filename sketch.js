@@ -6,21 +6,6 @@ class Enemy{
   constructor(x, aList, aColour, aSpeed, aHealth) {
     this.x = x;
     this.y = aList;
-    // if(this.y === 0){
-    //   this.row = enemyList1;
-    // }
-    // else if(this.y === 1){
-    //   this.row = enemyList2;
-    // }
-    // else if(this.y === 2){
-    //   this.row = enemyList3;
-    // }
-    // else if(this.y === 3){
-    //   this.row = enemyList4;
-    // }
-    // else if(this.y === 4){
-    //   this.row = enemyList5;
-    // }
     this.color = aColour;
     this.speed = aSpeed; 
     this.health = aHealth;
@@ -292,14 +277,16 @@ function enemyController(){
   }
   else{
     for(let j = 0; j < enemyGrid.length; j++){
-      for(let i = 0; i < enemyList1.length; i++){
-        // if (enemyGrid[j][i].health <= 0){
-        //   enemyGrid[j].splice(i, 1);
-        // }
-        // else{
-          enemyGrid[j][i].move();
-          enemyGrid[j][i].display();
-       // }
+      for(let i = 0; i < enemyGrid[j].length; i++){
+        if (enemyGrid[j].length > 0){
+          if (enemyGrid[j][i].health <= 0){
+            enemyGrid[j].splice(i, 1);
+          }
+          else{
+            enemyGrid[j][i].move();
+            enemyGrid[j][i].display();
+          }
+        }  
       }
     }
     anotherBuffer--;
@@ -322,9 +309,12 @@ function enemyController(){
 
 function mousePressed(){
   if (mouseX > 350 && mouseX < 1350 && mouseY > 250 && mouseY < 750 &&  menu === "game" && scrap >= price && (defenceGrid[cursorY-3][cursorX-4] === 0 || selectedTower === 0)){
-    defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-3]);
     if (selectedTower !== 5){
+      defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-3]);
       scrap = scrap - price;
+    }
+    else{
+      defenceGrid[cursorY-3].splice(cursorX-4, 1);
     }
   } 
 }
@@ -346,3 +336,6 @@ function keyPressed(){
   }
 }
 
+function windowResized() {
+  createCanvas(windowWidth, windowHeight);
+}
