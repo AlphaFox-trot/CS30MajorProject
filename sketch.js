@@ -19,7 +19,9 @@ class Enemy{
   }
 
   attack(){
-
+    if(){
+      
+    }
   }
 }
 
@@ -27,8 +29,7 @@ class Structure {
   constructor(aType, x, y, aList){
     this.type = aType;
     this.x = x*100;
-    this.row = y;
-    this.buffer = 500;
+    this.row = y*100;
     this.buffer = 250;
     this.list = aList;
   }
@@ -36,19 +37,19 @@ class Structure {
   show(){
     if (this.type === 1){
       fill(50, 50, 50);
-      rect(this.x*100, this.row*100, 50, 50);
+      rect(this.x, this.row, 50, 50);
     }
     if (this.type === 2){
       fill(255, 0, 0);
-      rect(this.x*100, this.row*100, 75, 25);
+      rect(this.x, this.row, 75, 25);
     }
     if (this.type === 3){
       fill(0, 150, 150);
-      rect(this.x*100, this.row*100, 25, 75);
+      rect(this.x, this.row, 25, 75);
     }
     if (this.type === 4){
       fill(150, 150, 0);
-      rect(this.x*100, this.row*100, 80, 80);
+      rect(this.x, this.row, 80, 80);
     }
   }
   work(){
@@ -82,13 +83,13 @@ class Bullet{
     this.X += this.speed;
     for(let i = 0; i < this.list.length; i++){
       if(this.X > this.list[i].X){
-        this.list[i].damage(2);
+        this.list[i].damage(1);
       }
     }
   }
   display(){
     fill(150);
-    ellipse(this.X, this.Y*100, 25, 25);
+    ellipse(this.X, this.Y, 25, 25);
   }
 }
 
@@ -156,6 +157,7 @@ function setup() {
   }
 }
 function draw() {
+  cursor(CROSS);
   background(220);
   displayMenu();
   checkMenu();
@@ -233,6 +235,9 @@ function displayMenu(){
       fill(150, 150, 0);
       rect(200, 250, 80, 80);
     }
+    if (selectedTower === 0){
+      text("Remove", 200, 250);
+    }
 
     // displayes Grid
     for (let i = 0; i < grid.length; i++){
@@ -244,12 +249,6 @@ function displayMenu(){
           fill(150, 0, 200);
         }
         rect(j*100 + 400, i*100 + 300, 100, 100);
-      }
-    }
-    if(bulletList.length !== 0){
-      for(let i = 0; i < bulletList.length; i++){
-        bulletList[i].move();
-        bulletList[i].display();
       }
     }
     fill(255, 255, 0);
@@ -265,6 +264,12 @@ function displayMenu(){
           defenceGrid[j][i].show();
           defenceGrid[j][i].work();
         }
+      }
+    }
+    if(bulletList.length !== 0){
+      for(let i = 0; i < bulletList.length; i++){
+        bulletList[i].move();
+        bulletList[i].display();
       }
     }
     enemyController();
@@ -309,12 +314,12 @@ function enemyController(){
 
 function mousePressed(){
   if (mouseX > 350 && mouseX < 1350 && mouseY > 250 && mouseY < 750 &&  menu === "game" && scrap >= price && (defenceGrid[cursorY-3][cursorX-4] === 0 || selectedTower === 0)){
-    if (selectedTower !== 5){
+    if(selectedTower === 0){
+      defenceGrid[cursorY-3][cursorX-4] = 0;
+    }
+    else {
       defenceGrid[cursorY-3][cursorX-4] =  new Structure(selectedTower, cursorX, cursorY, enemyGrid[cursorY-3]);
       scrap = scrap - price;
-    }
-    else{
-      defenceGrid[cursorY-3].splice(cursorX-4, 1);
     }
   } 
 }
