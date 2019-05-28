@@ -3,12 +3,13 @@
 // 4/5/2019
 
 class Enemy{
-  constructor(x, aList, aColour, aSpeed, aHealth) {
+  constructor(x, aList, aColour, aSpeed, aHealth, aGrid) {
     this.x = x;
     this.y = aList;
     this.color = aColour;
     this.speed = aSpeed; 
     this.health = aHealth;
+    this.list = aGrid;
   }
   display(){
     fill(this.color);
@@ -19,9 +20,7 @@ class Enemy{
   }
 
   attack(){
-    if(){
-      
-    }
+    this.list[this.y][floor(this.x/100)-4] = 0;
   }
 }
 
@@ -290,6 +289,9 @@ function enemyController(){
           else{
             enemyGrid[j][i].move();
             enemyGrid[j][i].display();
+            if(floor(enemyGrid[j][i].x/100)-4 <= defenceGrid[j].length && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-4] !== 0){
+              defenceGrid[enemyGrid[j][i].y-3][floor(enemyGrid[j][i].x/100)-4] = 0;
+            }
           }
         }  
       }
@@ -299,13 +301,13 @@ function enemyController(){
       pusher = floor(random(0, 5));
       selected = enemyWave.shift();
       if (selected === 1){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
       }
       if (selected === 2){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
       }
       if (selected === 3){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10));
+        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
       }
       anotherBuffer = random(100, 300);
     }
