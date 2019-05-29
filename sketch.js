@@ -289,8 +289,8 @@ function enemyController(){
           else{
             enemyGrid[j][i].move();
             enemyGrid[j][i].display();
-            if(floor(enemyGrid[j][i].x/100)-4 <= defenceGrid[j].length && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-4] !== 0){
-              defenceGrid[enemyGrid[j][i].y-3][floor(enemyGrid[j][i].x/100)-4] = 0;
+            if(floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0){
+              defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] = 0;
             }
           }
         }  
