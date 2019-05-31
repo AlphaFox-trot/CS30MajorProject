@@ -96,6 +96,7 @@ class Bullet{
 let grid = [];
 let lane1 = [];
 let lane2 = [];
+let lives = 5;
 // location of the cursor
 let cursorX = 0, cursorY = 0;
 // list of deployables on the grid
@@ -204,7 +205,11 @@ function displayMenu(){
     textAlign(LEFT);
     textSize(32);
     text("welcome player, you are the warden of colony V, a prison full of 'impures' sent to a distant plannet by a cult leader fighting a 'holy war'. As warden it is your job to protect them, you have full access to the defence grid arsinal. Good luck warden", windowWidth/2, 200, 1000, 200);
-    text("press 1 - 4 to select towers, 5 erases the current slot, tower 1 produces scrap, tower 2 shoots enemies, tower 3 blocks enemies, tower 4 damages enemies that stand on it, last untill the waves stop", windowWidth/2, 800, 1500, 200);
+    text("press 1 - 4 to select towers, 5 erases the current slot, tower 1 produces scrap, tower 2 shoots enemies, tower 3 pushes enemies, tower 4 damages enemies that stand on it, last untill the waves stop", windowWidth/2, 800, 1500, 200);
+  }
+  if (menu === "end"){
+    fill(0);
+    text("Game Over", windowWidth/2, 200, 1000, 300);
   }
   if (menu === "game"){
     lane1 = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
@@ -218,6 +223,7 @@ function displayMenu(){
     fill(0);
     text("Scrap " + scrap, 200 , 100);
     text("Price " + price, 200 , 150);
+    text("Lives Left " + lives, 200 , 200);
     if (selectedTower === 1){
       fill(50);
       rect(200, 250 , 50, 50);
@@ -236,6 +242,10 @@ function displayMenu(){
     }
     if (selectedTower === 0){
       text("Remove", 200, 250);
+    }
+
+    if(lives < 0){
+      menu = "end";
     }
 
     // displayes Grid
@@ -289,7 +299,11 @@ function enemyController(){
           else{
             enemyGrid[j][i].move();
             enemyGrid[j][i].display();
-            if(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type !== 4){
+            if(floor(enemyGrid[j][i].x/100) <= 0){
+              lives--;
+              enemyGrid[j].splice(i, 1);
+            }
+            if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type !== 4){
               defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] = 0;
             }
           }
