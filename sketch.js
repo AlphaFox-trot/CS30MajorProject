@@ -80,11 +80,6 @@ class Bullet{
   }
   move(){
     this.X += this.speed;
-    for(let i = 0; i < this.list.length; i++){
-      if(this.X > this.list[i].X){
-        this.list[i].damage(1);
-      }
-    }
   }
   display(){
     fill(150);
@@ -244,7 +239,7 @@ function displayMenu(){
       text("Remove", 200, 250);
     }
 
-    if(lives < 0){
+    if(lives < 1){
       menu = "end";
     }
 
@@ -299,15 +294,20 @@ function enemyController(){
           else{
             enemyGrid[j][i].move();
             enemyGrid[j][i].display();
-            if(floor(enemyGrid[j][i].x/100) <= 0){
-              lives--;
-              enemyGrid[j].splice(i, 1);
-            }
             if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type !== 4){
               defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] = 0;
             }
+            if(enemyGrid[j][i].x <= 20){
+              lives--;
+              enemyGrid[j].splice(i, 1);
+            }
           }
         }  
+      }
+    }
+    for(let i = 0; i < this.list.length; i++){
+      if(this.X > this.list[i].X){
+        this.list[i].damage(1);
       }
     }
     anotherBuffer--;
@@ -323,7 +323,7 @@ function enemyController(){
       if (selected === 3){
         enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
       }
-      anotherBuffer = random(100, 300);
+      anotherBuffer = random(500, 700);
     }
   }
 }
