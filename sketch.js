@@ -199,7 +199,7 @@ function displayMenu(){
     text("Endless", buttonX2, buttonY2);
     textAlign(LEFT);
     textSize(32);
-    text("welcome player, you are the warden of colony V, a prison full of 'impures' sent to a distant plannet by a cult leader fighting a 'holy war'. As warden it is your job to protect them, you have full access to the defence grid arsinal. Good luck warden", windowWidth/2, 200, 1000, 200);
+    text("Welcome player, you are the warden of colony V, a prison full of 'impures' sent to a distant plannet by a cult leader fighting a 'holy war'. As warden it is your job to protect them, you have full access to the defence grid arsinal. Good luck warden", windowWidth/2, 200, 1000, 200);
     text("press 1 - 4 to select towers, 5 erases the current slot, tower 1 produces scrap, tower 2 shoots enemies, tower 3 pushes enemies, tower 4 damages enemies that stand on it, last untill the waves stop", windowWidth/2, 800, 1500, 200);
   }
   if (menu === "end"){
@@ -299,31 +299,35 @@ function enemyController(){
             }
             if(enemyGrid[j][i].x <= 20){
               lives--;
-              enemyGrid[j].splice(i, 1);
+              enemyGrid[j][i].health = 0;
             }
           }
-        }  
-      }
+        }
+      }  
     }
-    for(let i = 0; i < this.list.length; i++){
-      if(this.X > this.list[i].X){
-        this.list[i].damage(1);
-      }
+  }
+  anotherBuffer--;
+  if (anotherBuffer <= 0){
+    pusher = floor(random(0, 5));
+    selected = enemyWave.shift();
+    if (selected === 1){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
     }
-    anotherBuffer--;
-    if (anotherBuffer <= 0){
-      pusher = floor(random(0, 5));
-      selected = enemyWave.shift();
-      if (selected === 1){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
-      }
-      if (selected === 2){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
-      }
-      if (selected === 3){
-        enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
-      }
-      anotherBuffer = random(500, 700);
+    if (selected === 2){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
+    }
+    if (selected === 3){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
+    }
+    anotherBuffer = random(500, 700);
+  }
+  for(let i = 0; i < bulletList.length; i++){
+    if(bulletList[i].X > bulletList[i].list.X){
+      bulletList.splice[i, 1];
+      bulletList[i].list.damage(1);
+    }
+    if(bulletList[i].X > 2000){
+      bulletList.splice[i, 1];
     }
   }
 }
