@@ -15,12 +15,11 @@ class Enemy{
     fill(this.color);
     ellipse(this.x, this.y*100 + 300, 40, 40);
   }
-  move() {
-    this.x -= this.speed;
+  move(modifier) {
+    this.x -= this.speed/modifier;
   }
-
-  attack(){
-    this.list[this.y][floor(this.x/100)-4] = 0;
+  damage(number){
+    this.health -= number;
   }
 }
 
@@ -38,17 +37,29 @@ class Structure {
       fill(50, 50, 50);
       rect(this.x, this.row, 50, 50);
     }
-    if (this.type === 2){
-      fill(255, 0, 0);
-      rect(this.x, this.row, 75, 25);
-    }
-    if (this.type === 3){
-      fill(0, 150, 150);
-      rect(this.x, this.row, 25, 75);
-    }
     if (this.type === 4){
       fill(150, 150, 0);
       rect(this.x, this.row, 80, 80);
+    }
+    if(this.type === 2){
+      if (this.buffer <= 0){
+        fill(255, 0, 0);
+        rect(this.x, this.row, 75, 25);
+      }
+      else {
+        fill(225, 150, 150);
+        rect(this.x, this.row, 75, 25);
+      }
+    }
+    if(this.type === 3){
+      if (this.buffer <= 0){
+        fill(0, 150, 150);
+        rect(this.x, this.row, 25, 75);
+      }
+      else {
+        fill(150, 150, 150);
+        rect(this.x, this.row, 25, 75);
+      }
     }
   }
   work(){
@@ -57,33 +68,22 @@ class Structure {
     }
     else{
       if(this.type === 1){
-        this.buffer = 500;
         this.buffer = 250;
         scrap += 10;
       }
-      if(this.type === 2){
+      if(this.type === 2 && this.list.length !== 0){
         this.buffer = 250;
-        if(this.list.length !== 0){
-          bulletList.push(new Bullet(this.list, this.x, this.row));
+        this.list[0].damage(1);
+      }
+      if(this.type === 3){
+        for(let i = 0; i < this.list.length; i++){
+          if(this.list[i].x <= this.x + 100 && this.list[i].x >=this.x){
+            this.list[i].x += 100;
+            this.buffer = 500;
+          }
         }
       }
     }
-  }
-}
-
-class Bullet{
-  constructor(aList, aX, aY){
-    this.list = aList;
-    this.X = aX;
-    this.Y = aY;
-    this.speed = 5;
-  }
-  move(){
-    this.X += this.speed;
-  }
-  display(){
-    fill(150);
-    ellipse(this.X, this.Y, 25, 25);
   }
 }
 
@@ -112,7 +112,6 @@ let enemyList3 = [];
 let enemyList4 = [];
 let enemyList5 = [];
 let enemyWave = [];
-let bulletList = [];
 let timer = 0;
 let buffer = 200;
 let waveBuffer = 200;
@@ -270,12 +269,6 @@ function displayMenu(){
         }
       }
     }
-    if(bulletList.length !== 0){
-      for(let i = 0; i < bulletList.length; i++){
-        bulletList[i].move();
-        bulletList[i].display();
-      }
-    }
     enemyController();
   }
 }
@@ -292,7 +285,12 @@ function enemyController(){
             enemyGrid[j].splice(i, 1);
           }
           else{
-            enemyGrid[j][i].move();
+            if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type === 4){
+              enemyGrid[j][i].move(2);
+            }
+            else{
+              enemyGrid[j][i].move(1);
+            }
             enemyGrid[j][i].display();
             if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type !== 4){
               defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] = 0;
@@ -320,15 +318,6 @@ function enemyController(){
       enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
     }
     anotherBuffer = random(500, 700);
-  }
-  for(let i = 0; i < bulletList.length; i++){
-    if(bulletList[i].X > bulletList[i].list.X){
-      bulletList.splice[i, 1];
-      bulletList[i].list.damage(1);
-    }
-    if(bulletList[i].X > 2000){
-      bulletList.splice[i, 1];
-    }
   }
 }
 
