@@ -92,6 +92,7 @@ let grid = [];
 let lane1 = [];
 let lane2 = [];
 let lives = 5;
+let aNumber = 0;
 // location of the cursor
 let cursorX = 0, cursorY = 0;
 // list of deployables on the grid
@@ -112,11 +113,13 @@ let enemyList3 = [];
 let enemyList4 = [];
 let enemyList5 = [];
 let enemyWave = [];
+let waveNumber = 0;
 let timer = 0;
 let buffer = 200;
 let waveBuffer = 200;
 let anotherBuffer;
 let selected;
+let hugeWave = false;
 // controls the rest of the game, and menu system
 let menu = "start";
 let level, wave;
@@ -138,17 +141,6 @@ function setup() {
   buttonX2 = windowWidth/3;
   buttonY1 = windowHeight/2;
   buttonY2 = windowHeight/2; 
-  for(let i = random(19, 30); i > 0; i--){
-    if(enemyWave.length > 8){
-      enemyWave.push(floor(random(1, 4)));
-    }
-    else if(enemyWave.length > 4){
-      enemyWave.push(floor(random(1, 3)));
-    }
-    else{
-      enemyWave.push(1);
-    }
-  }
 }
 function draw() {
   cursor(CROSS);
@@ -178,11 +170,14 @@ function checkMenu(){
     menu = "game";
     type = "campain";
     scrap = 200;
+    waveNumber = 6;
+    generateWave();
   }
   else if (mouseIsPressed && menu === "start" && mouseX >= buttonX2 - 125 && mouseX <= buttonX2 + 125 && mouseY >= buttonY2 - 50 && mouseY <= buttonY2 + 50){
     menu = "game";
     type = "endless";
     scrap = 50;
+    waveNumber = -1;
   }
 }
 function displayMenu(){
@@ -204,6 +199,10 @@ function displayMenu(){
   if (menu === "end"){
     fill(0);
     text("Game Over", windowWidth/2, 200, 1000, 300);
+  }
+  if (menu === "win"){
+    fill(0);
+    text("the camp is secure, for now", windowWidth/2, 200, 1000, 300);
   }
   if (menu === "game"){
     lane1 = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0];
@@ -240,6 +239,9 @@ function displayMenu(){
 
     if(lives < 1){
       menu = "end";
+    }
+    if(waveNumber === 0){
+      menu = "win";
     }
 
     // displayes Grid
@@ -304,20 +306,21 @@ function enemyController(){
       }  
     }
   }
-  anotherBuffer--;
-  if (anotherBuffer <= 0){
-    pusher = floor(random(0, 5));
-    selected = enemyWave.shift();
-    if (selected === 1){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
-    }
-    if (selected === 2){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
-    }
-    if (selected === 3){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
-    }
-    anotherBuffer = random(500, 700);
+  if(hugeWave === true){
+    releaseWave(50);
+  }
+  else{
+    releaseWave(500);
+  }
+  if(enemyWave.length <= 0){
+    hugeWave = !hugeWave;
+    generateWave(waveNumber); 
+    waveNumber--;
+  }
+  else if(enemyWave.length <= 0 && waveNumber <= 1){
+    hugeWave = !hugeWave;
+    epicWave(waveNumber);
+    waveNumber--; 
   }
 }
 
@@ -352,4 +355,52 @@ function keyPressed(){
 
 function windowResized() {
   createCanvas(windowWidth, windowHeight);
+}
+
+function generateWave(aNumber){
+  for(let i = random(10, 15); i > 0; i--){
+    if(enemyWave.length >= 8 - aNumber){
+      enemyWave.push(floor(random(1, 4)));
+    }
+    else if(enemyWave.length >= 4 - aNumber){
+      enemyWave.push(floor(random(1, 3)));
+    }
+    else{
+      enemyWave.push(1);
+    }
+  }
+}
+
+function epicWave(aNumber){
+  for(let i = 10 + aNumber; i > 0; i--){
+    if(enemyWave.length >= 8 - abs(aNumber)){
+      enemyWave.push(floor(random(1, 4)));
+    }
+    else if(enemyWave.length >= 4 - abs(aNumber)){
+      enemyWave.push(floor(random(1, 3)));
+    }
+    else{
+      enemyWave.push(1);
+    }
+  }
+}
+
+function releaseWave(someBuffer){
+  if(aNumber >= someBuffer){
+    pusher = floor(random(0, 5));
+    selected = enemyWave.shift();
+    if (selected === 1){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
+    }
+    if (selected === 2){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
+    }
+    if (selected === 3){
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
+    }
+    aNumber = 0;
+  }
+  else{
+    aNumber++;
+  }
 }
