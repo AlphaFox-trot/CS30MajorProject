@@ -3,13 +3,23 @@
 // 4/5/2019
 
 class Enemy{
-  constructor(x, aList, aColour, aSpeed, aHealth, aGrid) {
+  constructor(x, aList, aColour, aSpeed, aHealth, aGrid, aMutation) {
     this.x = x;
     this.y = aList;
     this.color = aColour;
+    this.list = aGrid;
     this.speed = aSpeed; 
     this.health = aHealth;
-    this.list = aGrid;
+    if(aMutation === 1){
+      this.speed += 2;
+    }
+    if(aMutation === 2){
+      this.health += 2;
+    }
+    if(aMutation === 3){
+      this.health += 1;
+      this.speed += 1;
+    }
   }
   display(){
     fill(this.color);
@@ -30,6 +40,12 @@ class Structure {
     this.row = y*100;
     this.buffer = 250;
     this.list = aList;
+    if(this.type !== 3){
+      this.health = 100;
+    }
+    else{
+      this.health = 500;
+    }
   }
 
   show(){
@@ -85,6 +101,9 @@ class Structure {
       }
     }
   }
+  hurt(number){
+    this.health -= number;
+  }
 }
 
 // makes the grid
@@ -105,6 +124,7 @@ let defenceLane5 = [];
 let selectedTower = 1;
 let price, scrap;
 let pusher;
+let generateMutation = 0;
 // list of enemies on the grid
 let enemyGrid = [];
 let enemyList1 = [];
@@ -115,7 +135,7 @@ let enemyList5 = [];
 let enemyWave = [];
 let waveNumber = 0;
 let timer = 0;
-let buffer = 200;
+let buffer = 300;
 let waveBuffer = 200;
 let anotherBuffer;
 let selected;
@@ -169,14 +189,14 @@ function checkMenu(){
   if (mouseIsPressed && menu === "start" && mouseX >= buttonX1 - 125 && mouseX <= buttonX1 + 125 && mouseY >= buttonY1 - 50 && mouseY <= buttonY1 + 50){
     menu = "game";
     type = "campain";
-    scrap = 200;
-    waveNumber = 6;
+    scrap = 60;
+    waveNumber = 2;
     generateWave();
   }
   else if (mouseIsPressed && menu === "start" && mouseX >= buttonX2 - 125 && mouseX <= buttonX2 + 125 && mouseY >= buttonY2 - 50 && mouseY <= buttonY2 + 50){
     menu = "game";
     type = "endless";
-    scrap = 50;
+    scrap = 40;
     waveNumber = -1;
   }
 }
@@ -240,7 +260,7 @@ function displayMenu(){
     if(lives < 1){
       menu = "end";
     }
-    if(waveNumber === 0){
+    if(waveNumber === 0 && enemyGrid[0].length === 0 && enemyGrid[1].length === 0 && enemyGrid[2].length === 0 && enemyGrid[3].length === 0 && enemyGrid[4].length === 0){
       menu = "win";
     }
 
@@ -268,6 +288,9 @@ function displayMenu(){
         if (defenceGrid[j][i] !== 0){
           defenceGrid[j][i].show();
           defenceGrid[j][i].work();
+          if (defenceGrid[j][i].health <= 0){
+            defenceGrid[j][i] = 0;
+          }
         }
       }
     }
@@ -287,15 +310,17 @@ function enemyController(){
             enemyGrid[j].splice(i, 1);
           }
           else{
-            if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type === 4){
-              enemyGrid[j][i].move(2);
-            }
-            else{
-              enemyGrid[j][i].move(1);
-            }
             enemyGrid[j][i].display();
             if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] !== 0 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type !== 4){
-              defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3] = 0;
+              defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].hurt(1);
+            }
+            else{
+              if(floor(enemyGrid[j][i].x/100)-3 >= 0 && floor(enemyGrid[j][i].x/100)-3 <= 9 && defenceGrid[enemyGrid[j][i].y][floor(enemyGrid[j][i].x/100)-3].type === 4){
+                enemyGrid[j][i].move(2);
+              }
+              else{
+                enemyGrid[j][i].move(1);
+              }
             }
             if(enemyGrid[j][i].x <= 20){
               lives--;
@@ -306,21 +331,24 @@ function enemyController(){
       }  
     }
   }
-  if(hugeWave === true){
-    releaseWave(50);
-  }
-  else{
-    releaseWave(500);
-  }
-  if(enemyWave.length <= 0){
-    hugeWave = !hugeWave;
-    generateWave(waveNumber); 
-    waveNumber--;
-  }
-  else if(enemyWave.length <= 0 && waveNumber <= 1){
-    hugeWave = !hugeWave;
-    epicWave(waveNumber);
-    waveNumber--; 
+  if(waveNumber !== 0){
+    if(hugeWave === true){
+      releaseWave(50);
+    }
+    else{
+      releaseWave(400);
+    }
+    if(enemyWave.length <= 0){
+      hugeWave = !hugeWave;
+      generateWave(waveNumber); 
+      waveNumber--;
+      generateMutation = floor(random(1, 4));
+    }
+    else if(enemyWave.length <= 0 && waveNumber <= 1){
+      hugeWave = !hugeWave;
+      epicWave(waveNumber);
+      waveNumber--; 
+    }
   }
 }
 
@@ -358,7 +386,7 @@ function windowResized() {
 }
 
 function generateWave(aNumber){
-  for(let i = random(10, 15); i > 0; i--){
+  for(let i = 10; i > 0; i--){
     if(enemyWave.length >= 8 - aNumber){
       enemyWave.push(floor(random(1, 4)));
     }
@@ -390,13 +418,13 @@ function releaseWave(someBuffer){
     pusher = floor(random(0, 5));
     selected = enemyWave.shift();
     if (selected === 1){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid));
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "red", 0.5, 5, defenceGrid, generateMutation));
     }
     if (selected === 2){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid));
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "blue", 1, 3, defenceGrid, generateMutation));
     }
     if (selected === 3){
-      enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid));
+      enemyGrid[pusher].push(new Enemy(1500, pusher, "grey", 0.25, 10, defenceGrid, generateMutation));
     }
     aNumber = 0;
   }
