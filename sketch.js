@@ -188,7 +188,7 @@ function draw() {
 function checkMenu(){
   if (mouseIsPressed && menu === "start" && mouseX >= buttonX1 - 125 && mouseX <= buttonX1 + 125 && mouseY >= buttonY1 - 50 && mouseY <= buttonY1 + 50){
     menu = "game";
-    type = "campain";
+    type = "campaign";
     scrap = 60;
     waveNumber = 2;
     generateWave();
@@ -213,8 +213,8 @@ function displayMenu(){
     text("Endless", buttonX2, buttonY2);
     textAlign(LEFT);
     textSize(32);
-    text("Welcome player, you are the warden of colony V, a prison full of 'impures' sent to a distant plannet by a cult leader fighting a 'holy war'. As warden it is your job to protect them, you have full access to the defence grid arsinal. Good luck warden", windowWidth/2, 200, 1000, 200);
-    text("press 1 - 4 to select towers, 5 erases the current slot, tower 1 produces scrap, tower 2 shoots enemies, tower 3 pushes enemies, tower 4 damages enemies that stand on it, last untill the waves stop", windowWidth/2, 800, 1500, 200);
+    text("Welcome player, you are the warden of colony V, a prison full of 'impures' sent to a distant planet by a cult leader fighting a 'holy war'. As warden it is your job to protect them, you have full access to the defence grid. Good luck", windowWidth/2, 200, 1000, 200);
+    text("press 1 - 4 to select towers, 5 erases the current slot, tower 1 produces scrap, tower 2 shoots enemies, tower 3 pushes enemies, tower 4 damages enemies that stand on it, last until the waves stop", windowWidth/2, 800, 1500, 200);
   }
   if (menu === "end"){
     fill(0);
