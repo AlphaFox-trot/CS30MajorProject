@@ -337,7 +337,7 @@ function enemyController(){
     }
     else{
       releaseWave(400);
-    }
+    } 
     if(enemyWave.length <= 0){
       hugeWave = !hugeWave;
       generateWave(waveNumber); 
